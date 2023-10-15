@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+
+<!--自适应屏幕大小-->
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="使用官方ChatGPT API实现简单HTML网页版在线聊天"/>
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传</title>
+</head>
+
+<body>
+<h2>上传CSV文件</h2>
+<form id="upload-form" enctype="multipart/form-data">
+    <input type="file" id="file-input" name="file" accept=".csv">
+    <button type="submit">上传文件</button>
+</form>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // 阻止表单提交的默认行为
+
+            // 获取文件输入字段
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.text();
+                        } else {
+                            throw new Error('文件上传失败');
+                        }
+                    })
+                    .then(data => {
+                        console.log('文件上传成功：', data);
+                    })
+                    .catch(error => {
+                        console.error('错误：', error);
+                    });
+            } else {
+                console.error('请选择一个CSV文件');
+            }
+        });
+
+    </script>
+</body>
+</html>
